@@ -1,0 +1,6 @@
+{
+  "name": "No Floor Plan",
+  "description": "Tactical real-time 3D stealth infiltration game powered by an optimized OpenGL ES 2.0 graphics engine with dynamic thermal frame-rate governor for budget mobile hardware.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

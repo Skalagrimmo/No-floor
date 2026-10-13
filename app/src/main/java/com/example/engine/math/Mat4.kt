@@ -45,6 +45,21 @@ class Mat4 {
         return this
     }
 
+    fun transformPoint(p: Vec3): Vec3 {
+        val inVec = floatArrayOf(p.x, p.y, p.z, 1.0f)
+        val outVec = FloatArray(4)
+        Matrix.multiplyMV(outVec, 0, values, 0, inVec, 0)
+        val w = if (outVec[3] != 0f) outVec[3] else 1.0f
+        return Vec3(outVec[0] / w, outVec[1] / w, outVec[2] / w)
+    }
+
+    fun transformDirection(d: Vec3): Vec3 {
+        val inVec = floatArrayOf(d.x, d.y, d.z, 0.0f)
+        val outVec = FloatArray(4)
+        Matrix.multiplyMV(outVec, 0, values, 0, inVec, 0)
+        return Vec3(outVec[0], outVec[1], outVec[2]).normalize()
+    }
+
     companion object {
         fun ortho(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float): Mat4 {
             val m = Mat4()

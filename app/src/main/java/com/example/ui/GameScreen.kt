@@ -407,7 +407,7 @@ fun ThermalGovernorBadge(
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-                text = "${telemetry.currentFps.toInt()} FPS | ${telemetry.batteryTempC.toInt()}°C",
+                text = "${telemetry.currentFps.toInt()} FPS | ${telemetry.batteryTempC.toInt()}°C" + if (telemetry.isHighHeat) " [THRM]" else "",
                 color = PureWhite,
                 fontSize = 10.sp,
                 fontFamily = FontFamily.Monospace
@@ -612,10 +612,29 @@ fun ThermalOptimizerDialog(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text("Current FPS: ${telemetry.currentFps.toInt()} (Target: ${telemetry.targetFps})", color = PureWhite, fontSize = 12.sp)
-            Text("Frame Time: ${telemetry.frameTimeMs} ms", color = PureWhite, fontSize = 12.sp)
+            Text("Frame Time: ${telemetry.frameTimeMs} ms (Budget: ${(1000f / telemetry.targetFps.coerceAtLeast(15)).toInt()} ms)", color = PureWhite, fontSize = 12.sp)
             Text("Battery/SoC Temp: ${telemetry.batteryTempC}°C", color = PureWhite, fontSize = 12.sp)
             Text("Thermal Status: ${telemetry.tier.displayName} (${telemetry.tier.description})", color = NeonAmber, fontSize = 12.sp)
             Text("GPU Draw Calls: ${telemetry.drawCalls} calls", color = PureWhite, fontSize = 12.sp)
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("OCCLUSION CULLING (WALL OBSTRUCTION):", color = DimText, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            Text("Culling Mode: ${telemetry.occlusionMode}", color = NeonCyan, fontSize = 11.sp)
+            Text("Hidden by Walls: ${telemetry.culledChunks} chunks, ${telemetry.culledGuards} guards", color = PureWhite, fontSize = 11.sp)
+            Text("Saved GPU Load: ~${telemetry.drawCallsSaved} draw calls / ~${telemetry.verticesSaved} verts", color = NeonAmber, fontSize = 11.sp)
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("GEOMETRY BATCHING (STATIC MESH MERGE):", color = DimText, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            Text("Batch Mode: ${telemetry.batchingMode}", color = NeonCyan, fontSize = 11.sp)
+            Text("Batched Draw Calls: ${telemetry.batchedDrawCalls} (Saved: ${telemetry.batchingDrawCallsSaved} calls)", color = NeonAmber, fontSize = 11.sp)
+            Text("Merged Static Vertices: ${telemetry.batchedVertices} verts across materials", color = PureWhite, fontSize = 11.sp)
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("FRAME BUDGET & PASS REGULATION:", color = DimText, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            Text("Budget Usage: ${telemetry.budgetUsagePercent.toInt()}%", color = if (telemetry.budgetUsagePercent > 100f) AlertRed else NeonCyan, fontSize = 11.sp)
+            Text("Texture Detail: ${telemetry.textureDetail}", color = NeonAmber, fontSize = 11.sp)
+            Text("Post-Process Pass: ${if (telemetry.postProcessEnabled) "ACTIVE" else "DISABLED (Thermal Save)"}", color = if (telemetry.postProcessEnabled) PureWhite else AlertRed, fontSize = 11.sp)
+            Text("Shadow Depth Pass: ${if (telemetry.shadowsEnabled) "ACTIVE" else "DISABLED (Thermal Save)"}", color = if (telemetry.shadowsEnabled) PureWhite else AlertRed, fontSize = 11.sp)
 
             Spacer(modifier = Modifier.height(14.dp))
             Text("POWER PROFILES:", color = DimText, fontSize = 11.sp, fontWeight = FontWeight.Bold)
